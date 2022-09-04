@@ -1,0 +1,316 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ripe</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-09-04"><meta name="DC.source" content="ripe.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear <span class="string">all</span>;
+clc;
+<span class="comment">%Decision of Ripeness</span>
+
+combImg=seg(<span class="string">'tomato.jpeg'</span>,<span class="string">'domates'</span>);
+
+imwrite(combImg,<span class="string">'combine.png'</span>);
+format <span class="string">long</span> <span class="string">g</span>;
+format <span class="string">compact</span>;
+fontSize = 16;
+baseFileName = <span class="string">'combine.png'</span>;
+folder = pwd
+fullFileName = fullfile(folder, baseFileName);
+<span class="keyword">if</span> ~exist(fullFileName, <span class="string">'file'</span>)
+
+  fullFileNameOnSearchPath = baseFileName;
+  <span class="keyword">if</span> ~exist(fullFileNameOnSearchPath, <span class="string">'file'</span>)
+
+    errorMessage = sprintf(<span class="string">'Error: %s does not exist in the search path folders.'</span>, fullFileName);
+    uiwait(warndlg(errorMessage));
+    <span class="keyword">return</span>;
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+rgbImage = imread(fullFileName);
+[rows, columns, numberOfColorChannels] = size(rgbImage)
+figure(2);
+subplot(2, 2, 1);
+imshow(rgbImage, []);
+axis <span class="string">on</span>;
+caption = sprintf(<span class="string">'Original Color Image\n%s'</span>, baseFileName);
+title(caption, <span class="string">'FontSize'</span>, fontSize, <span class="string">'Interpreter'</span>, <span class="string">'None'</span>);
+hp = impixelinfo();
+set(gcf, <span class="string">'Units'</span>, <span class="string">'Normalized'</span>, <span class="string">'OuterPosition'</span>, [0 0.05 1 0.95]);
+set(gcf, <span class="string">'Name'</span>, <span class="string">'Ripeness'</span>, <span class="string">'NumberTitle'</span>, <span class="string">'Off'</span>)
+drawnow;
+[BW, maskedRGBImage] = createMask(rgbImage);
+subplot(2, 2, 2);
+imshow(BW);
+title(<span class="string">'Color Segmentation'</span>, <span class="string">'FontSize'</span>, fontSize, <span class="string">'Interpreter'</span>, <span class="string">'None'</span>);
+axis <span class="string">on</span>;
+drawnow;
+fruitMask = imfill(BW, <span class="string">'holes'</span>);
+fruitMask = bwareaopen(fruitMask, 1000);
+subplot(2, 2, 3);
+imshow(fruitMask);
+title(<span class="string">'Final Mask'</span>, <span class="string">'FontSize'</span>, fontSize, <span class="string">'Interpreter'</span>, <span class="string">'None'</span>);
+axis <span class="string">on</span>;
+drawnow;
+maskedRGBImage = bsxfun(@times, rgbImage, cast(fruitMask, <span class="string">'like'</span>, rgbImage));
+subplot(2, 2, 4);
+imshow(maskedRGBImage);
+title(<span class="string">'Final Masked Image'</span>, <span class="string">'FontSize'</span>, fontSize, <span class="string">'Interpreter'</span>, <span class="string">'None'</span>);
+axis <span class="string">on</span>;
+drawnow;
+redChannel = rgbImage(:, :, 1);
+greenChannel = rgbImage(:, :, 2);
+blueChannel = rgbImage(:, :, 3);
+propsR = regionprops(fruitMask, redChannel, <span class="string">'MeanIntensity'</span>, <span class="string">'Centroid'</span>);
+propsG = regionprops(fruitMask, greenChannel, <span class="string">'MeanIntensity'</span>);
+propsB = regionprops(fruitMask, blueChannel, <span class="string">'MeanIntensity'</span>);
+redMeans = [propsR.MeanIntensity]
+greenMeans = [propsG.MeanIntensity]
+blueMeans = [propsB.MeanIntensity]
+ ripeColor = [192,3,2,255];<span class="comment">%domates</span>
+ unripeColor = [135,182,17,255];
+<span class="comment">% ripeColor = [205,168,53];%muz</span>
+<span class="comment">% unripeColor = [134,188,16];</span>
+
+hold <span class="string">on</span>;
+<span class="keyword">for</span> k = 1 : length(propsR)
+  thisColor = [redMeans(k), greenMeans(k), blueMeans(k)];
+  distanceToRipe = sqrt((thisColor(1) - ripeColor(1)) .^ 2 + <span class="keyword">...</span>
+    (thisColor(2) - ripeColor(2)) .^ 2 + <span class="keyword">...</span>
+    (thisColor(3) - ripeColor(3)) .^ 2);
+  distanceToUnripe = sqrt((thisColor(1) - unripeColor(1)) .^ 2 + <span class="keyword">...</span>
+    (thisColor(2) - unripeColor(2)) .^ 2 + <span class="keyword">...</span>
+    (thisColor(3) - unripeColor(3)) .^ 2);
+  fprintf(<span class="string">'For blob #%d,\n    Distance to Ripe = %f, distance to Unripe = %f.\n'</span>, distanceToRipe, distanceToUnripe);
+  xCenter = propsR(k).Centroid(1);
+  yCenter = propsR(k).Centroid(2);
+  <span class="keyword">if</span> distanceToRipe &lt; distanceToUnripe
+    text(xCenter, yCenter, <span class="string">'Ripe'</span>, <span class="string">'Color'</span>, <span class="string">'w'</span>, <span class="string">'FontSize'</span>, fontSize, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+  <span class="keyword">else</span>
+    text(xCenter, yCenter, <span class="string">'Unripe'</span>, <span class="string">'Color'</span>, <span class="string">'b'</span>, <span class="string">'FontSize'</span>, fontSize, <span class="string">'FontWeight'</span>, <span class="string">'bold'</span>);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">function</span> [BW,maskedRGBImage] = createMask(RGB)
+
+I = rgb2hsv(RGB);
+channel1Min = 0.000;
+channel1Max = 1.000;
+channel2Min = 0.338;
+channel2Max = 1.000;
+channel3Min = 0.000;
+channel3Max = 1.000;
+sliderBW = (I(:,:,1) &gt;= channel1Min ) &amp; (I(:,:,1) &lt;= channel1Max) &amp; <span class="keyword">...</span>
+  (I(:,:,2) &gt;= channel2Min ) &amp; (I(:,:,2) &lt;= channel2Max) &amp; <span class="keyword">...</span>
+  (I(:,:,3) &gt;= channel3Min ) &amp; (I(:,:,3) &lt;= channel3Max);
+BW = sliderBW;
+maskedRGBImage = RGB;
+maskedRGBImage(repmat(~BW,[1 1 3])) = 0;
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">folder =
+    'C:\Users\ZEYNEP\OneDrive\Masa&uuml;st&uuml;\&ouml;devler\Yeni klas&ouml;r (2)\the last'
+rows =
+   822
+columns =
+   994
+numberOfColorChannels =
+     3
+redMeans =
+  Columns 1 through 3
+          175.945523258151          175.958522898517           100.60469667319
+  Columns 4 through 6
+           88.407249466951          66.9103161607255          132.601126520566
+  Columns 7 through 8
+           79.183855981417          92.4545454545455
+greenMeans =
+  Columns 1 through 3
+          35.8403489727817          24.1357119278959          9.09735812133072
+  Columns 4 through 6
+          100.420753375977          113.881471218038          164.383916315615
+  Columns 7 through 8
+          90.3921022067364          130.048821548822
+blueMeans =
+  Columns 1 through 3
+          21.1367346118281          18.7268395596825          12.2093933463796
+  Columns 4 through 6
+          33.1620469083156          46.9712810177604          62.0136791783026
+  Columns 7 through 8
+          36.4470383275261          47.0959595959596
+For blob #4.126075e+01,
+    Distance to Ripe = 151.842985, distance to Unripe = For blob #3.136614e+01,
+    Distance to Ripe = 163.100325, distance to Unripe = For blob #9.216567e+01,
+    Distance to Ripe = 176.355636, distance to Unripe = For blob #1.455793e+02,
+    Distance to Ripe = 95.327172, distance to Unripe = For blob #1.731027e+02,
+    Distance to Ripe = 100.869305, distance to Unripe = For blob #1.821391e+02,
+    Distance to Ripe = 48.397441, distance to Unripe = For blob #1.468042e+02,
+    Distance to Ripe = 109.021265, distance to Unripe = For blob #1.675838e+02,
+    Distance to Ripe = 73.585375, distance to Unripe = </pre><img vspace="5" hspace="5" src="ripe_01.png" alt=""> <img vspace="5" hspace="5" src="ripe_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear all;
+clc;
+%Decision of Ripeness
+
+combImg=seg('tomato.jpeg','domates');
+
+imwrite(combImg,'combine.png');
+format long g;
+format compact;
+fontSize = 16;
+baseFileName = 'combine.png';
+folder = pwd
+fullFileName = fullfile(folder, baseFileName);
+if ~exist(fullFileName, 'file')
+  
+  fullFileNameOnSearchPath = baseFileName; 
+  if ~exist(fullFileNameOnSearchPath, 'file')
+    
+    errorMessage = sprintf('Error: %s does not exist in the search path folders.', fullFileName);
+    uiwait(warndlg(errorMessage));
+    return;
+  end
+end
+
+rgbImage = imread(fullFileName);
+[rows, columns, numberOfColorChannels] = size(rgbImage)
+figure(2);
+subplot(2, 2, 1);
+imshow(rgbImage, []);
+axis on;
+caption = sprintf('Original Color Image\n%s', baseFileName);
+title(caption, 'FontSize', fontSize, 'Interpreter', 'None');
+hp = impixelinfo(); 
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0.05 1 0.95]);
+set(gcf, 'Name', 'Ripeness', 'NumberTitle', 'Off')
+drawnow;
+[BW, maskedRGBImage] = createMask(rgbImage);
+subplot(2, 2, 2);
+imshow(BW);
+title('Color Segmentation', 'FontSize', fontSize, 'Interpreter', 'None');
+axis on;
+drawnow;
+fruitMask = imfill(BW, 'holes');
+fruitMask = bwareaopen(fruitMask, 1000);
+subplot(2, 2, 3);
+imshow(fruitMask);
+title('Final Mask', 'FontSize', fontSize, 'Interpreter', 'None');
+axis on;
+drawnow;
+maskedRGBImage = bsxfun(@times, rgbImage, cast(fruitMask, 'like', rgbImage));
+subplot(2, 2, 4);
+imshow(maskedRGBImage);
+title('Final Masked Image', 'FontSize', fontSize, 'Interpreter', 'None');
+axis on;
+drawnow;
+redChannel = rgbImage(:, :, 1);
+greenChannel = rgbImage(:, :, 2);
+blueChannel = rgbImage(:, :, 3);
+propsR = regionprops(fruitMask, redChannel, 'MeanIntensity', 'Centroid');
+propsG = regionprops(fruitMask, greenChannel, 'MeanIntensity');
+propsB = regionprops(fruitMask, blueChannel, 'MeanIntensity');
+redMeans = [propsR.MeanIntensity]
+greenMeans = [propsG.MeanIntensity]
+blueMeans = [propsB.MeanIntensity]
+ ripeColor = [192,3,2,255];%domates
+ unripeColor = [135,182,17,255];
+% ripeColor = [205,168,53];%muz
+% unripeColor = [134,188,16];
+
+hold on;
+for k = 1 : length(propsR)
+  thisColor = [redMeans(k), greenMeans(k), blueMeans(k)];
+  distanceToRipe = sqrt((thisColor(1) - ripeColor(1)) .^ 2 + ...
+    (thisColor(2) - ripeColor(2)) .^ 2 + ...
+    (thisColor(3) - ripeColor(3)) .^ 2);
+  distanceToUnripe = sqrt((thisColor(1) - unripeColor(1)) .^ 2 + ...
+    (thisColor(2) - unripeColor(2)) .^ 2 + ...
+    (thisColor(3) - unripeColor(3)) .^ 2);
+  fprintf('For blob #%d,\n    Distance to Ripe = %f, distance to Unripe = %f.\n', distanceToRipe, distanceToUnripe);
+  xCenter = propsR(k).Centroid(1);
+  yCenter = propsR(k).Centroid(2);
+  if distanceToRipe < distanceToUnripe
+    text(xCenter, yCenter, 'Ripe', 'Color', 'w', 'FontSize', fontSize, 'FontWeight', 'bold');
+  else
+    text(xCenter, yCenter, 'Unripe', 'Color', 'b', 'FontSize', fontSize, 'FontWeight', 'bold');
+  end
+end
+function [BW,maskedRGBImage] = createMask(RGB)
+
+I = rgb2hsv(RGB);
+channel1Min = 0.000;
+channel1Max = 1.000;
+channel2Min = 0.338;
+channel2Max = 1.000;
+channel3Min = 0.000;
+channel3Max = 1.000;
+sliderBW = (I(:,:,1) >= channel1Min ) & (I(:,:,1) <= channel1Max) & ...
+  (I(:,:,2) >= channel2Min ) & (I(:,:,2) <= channel2Max) & ...
+  (I(:,:,3) >= channel3Min ) & (I(:,:,3) <= channel3Max);
+BW = sliderBW;
+maskedRGBImage = RGB;
+maskedRGBImage(repmat(~BW,[1 1 3])) = 0;
+end
+##### SOURCE END #####
+--></body></html>
