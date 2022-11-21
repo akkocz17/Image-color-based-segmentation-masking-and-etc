@@ -23,6 +23,6 @@ In line with the resulting output, the maturity decision was made according to t
 ![image](https://user-images.githubusercontent.com/88335393/203014902-714a58f6-a5d5-4094-8ac5-479b058698d5.png)
 
 
-Contributers;
+Contributors;
 
 [Aysu Arda](https://github.com/ardaysu)   and   [Zeynep Akkoç](https://github.com/akkocz17)
