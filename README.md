@@ -25,4 +25,4 @@ In line with the resulting output, the maturity decision was made according to t
 
 Contributers;
 
-Aysu Arda   and   Zeynep Akkoç
+[Aysu Arda](https://github.com/ardaysu)   and   [Zeynep Akkoç](https://github.com/akkocz17)
